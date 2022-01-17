@@ -21,11 +21,21 @@ print(list1)
 changelist(list1)
 print(list1)  # 可变参数 """
 
-# 函数默认参数
+""" # 函数默认参数
 def defaultAgrument(a , b =35):
     print("姓名：", a)
     print("年龄：", b)
 # defaultAgrument(a="潘求祺", b=20)
 # defaultAgrument("张溜溜")
 print("中文，你好", 10)   # 在python3中可以正常显示，在python2中会出错
-print("你好%d"%10)
+print("你好%d"%10) """
+
+""" def f(a,b,*,c,d):
+    print(c+d)
+
+
+f(1,2,c=3,d=4) """
+
+freshfruit = ['banana     ', 'bluebarry', 'apple']
+print([weapon.strip() for weapon in freshfruit])  # strip()方法用于去除字符串前后的指定字符
+print(freshfruit)
