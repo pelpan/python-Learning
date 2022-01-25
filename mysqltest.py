@@ -66,7 +66,7 @@ print(mycursor.rowcount, "SUCCESS")  # 输出行号码'''
 
 # mycursor.execute("SELECT * FROM info WHERE carPlateNum='浙B67E8A'") # 查询指定数据
 # sql = "UPDATE info SET records = '1' WHERE carPlateNum = '浙B67E8A'"   # 通过UPDATE更新数据信息
-# sql = "DELETE FROM info WHERE carPlateNum = '浙B67E8A'"   # 通过UPDATE更新数据信息
+sql = "DELETE FROM info WHERE carPlateNum = '浙B67E8A'"   # 通过UPDATE更新数据信息
 mycursor.execute(sql)
 mydb.commit()
 myresult = mycursor.fetchall()  # fetchall() 获取所有记录

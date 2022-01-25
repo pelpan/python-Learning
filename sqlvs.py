@@ -11,7 +11,7 @@ cursor = conn.cursor()
 # #3执行查询，并获取查询的总行数
 rowNums = cursor.execute('SELECT * FROM test1')
 # print('查询的行数为' + str(rowNums))
-# #4.遍历结果，获取查询的结果
+# #4.遍历结果，获取查询的结果cl
 ResultList = cursor.fetchall()
 for i in range(len(ResultList)): 
     print(ResultList[i])
@@ -19,7 +19,7 @@ for i in range(len(ResultList)):
 conn.commit()
 # #关闭
 cursor.close()
-conn.close() """
+conn.close()  """
 
 import pymysql
 
@@ -31,12 +31,14 @@ db = pymysql.connect(
 )
 
 cursor = db.cursor()
-
+age = 22
+sql = 'delete from test1 where age = %d' %(age)
 # cursor.execute('show tables')
-cursor.execute('select * from test1')
-
-data = cursor.fetchall()
+# cursor.execute('select * from test1')
+cursor.execute(sql)
+db.commit()
+'''data = cursor.fetchall()
 for x in data:
-    print(x)
+    print(x)'''
 
 db.close()
