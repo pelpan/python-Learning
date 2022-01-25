@@ -13,24 +13,49 @@ db = pymysql.connect(
 
 # 光标
 cursor = db.cursor()
+fmt = "{:10}{:15}"
 
-
-def database(carPlateNum):
-    sql = "select * from info  where carPlateNum = '%s'" % carPlateNum
+def search(column, data):
+    sql = "select * from info  where %s = '%s'" % (column, data)
     cursor.execute(sql)
+    tmp = cursor.fetchall()
+    for x in tmp:    
+        if tmp:
+            print('--------------------------------')
+            print(fmt.format('车牌号：', x[0]))
+            print(fmt.format('车主：', x[1]))
+            print(fmt.format('身份证号：', x[2]))
+            print(fmt.format('未处理的违章记录：', x[3]))
+            print('--------------------------------')
+        else:
+            print("未查询到记录")
 
-    tmp = cursor.fetchone()
-    # print(cursor.fetc)
-    if tmp:
-        print('车牌号：', tmp[0])
-        print('车主：', tmp[1])
-        print('身份证号：', tmp[2])
-        print('未处理的违章记录：', tmp[3])
-    else:
-        print("未查询到记录")
 
+def searchInfo():
+    while running:
+        print(menu3)
+        cmd = input()
+        if cmd != '0':
+            if commands(cmd) is not None:
+                if cmd == '1': # 车牌号
+                    data = input('请输入车牌号')
+                    search('carPlateNum', data)
+                elif cmd == '2':
+                    data = input('请输入车主名')
+                    search('driverName', data)
+                elif cmd == '3':
+                    data = input('请输入车主身份证号码')
+                    search('driverID', data)
+            else:
+                print('Unknown Command')
+        else:
+            return
 
-def addRecord(carPlateNum, driverName, driverId, records):
+def addRecord():
+    carPlateNum  =input('请输入车牌号')
+    driverName = input('请输入车主名')
+    driverId = input('请输入车主身份证号')
+    records = input('请输入未处理违章数量')
     sql = "insert into info(carPlateNum, driverName,driverID, records)"
     sql2 = sql + "values ('%s' , '%s', '%s', '%s')" % (carPlateNum, driverName, driverId, records)
     cursor.execute(sql2)
@@ -41,18 +66,17 @@ def showInfo():
     sql = "select * from info"
     cursor.execute(sql)
     tmp = cursor.fetchall()
-    # print(cursor.fetc)
     print('-----------------------------')
     if tmp:
         for x in tmp:
-            print('| 车牌号：', x[0])
-            print('| 车主', x[1])
-            print('| 身份证号', x[2])
-            print('| 未处理违章', x[3])
+            print(fmt.format('| 车牌号:', x[0]))
+            print(fmt.format('| 车主:', x[1]))
+            print(fmt.format('| 身份证号:', x[2]))
+            print(fmt.format('| 未处理违章:', x[3]))
             print('-----------------------------')
 
     else:
-        print("未查询到记录")
+        print("[未查询到记录]")
 
 
 def deleteRecord(carPlateNum):
@@ -64,14 +88,63 @@ def deleteRecord(carPlateNum):
     db.commit()
 
 
+menu2 = '''
+        1. 车牌号    
+        2. 车主      
+        3. 身份证号   
+        4. 未处理记录
+        0. 返回    
+'''
+menu3 = '''
+        【请选择查询对象】
+        1. 车牌号    
+        2. 车主      
+        3. 身份证号   
+        0. 返回    
+'''
+
+def update(column, data ,num):
+    sql = "update info set %s = %d where carPlateNum = '%s' "%(column, data, num)
+    cursor.execute(sql)
+    db.commit()
+    print('修改成功')
+
+def updateRecord():
+    cpn = input('请输入车牌号：')
+    while running:
+        print(menu2)
+        cmd = input()
+        if cmd != '0':
+            if commands(cmd) is not None:
+                if cmd == '1':
+                    # new = input('请输入新的车牌号')
+                    # update('carPlateNum', new, cpn)
+                    print('暂不支持车牌号修改')
+                elif cmd == '2':
+                    new = input('请输入新的数据：')
+                    update('driverName', new, cpn)
+                elif cmd == '3':
+                    new = input('请输入新的数据：')
+                    update('driverID', new, cpn)
+                elif cmd == '4':
+                    new = int(input('请输入新的数据'))
+                    update('records', new, cpn)
+            else:
+                print('Unknown Command')
+        else:
+            return
+
+
+
 menu = """
-        主菜单
+         主菜单
     ————————————————
-        1. 查询
-        2. 显示
-        3. 删除
-        4. 修改
-        q. 退出
+    |    1. 查询    |
+    |    2. 显示    |
+    |    3. 删除    | 
+    |    4. 新增    |
+    |    5. 修改    |
+    |    q. 退出    |
     ————————————————
 """
 running = True
@@ -81,6 +154,7 @@ menu_dict = {
     "2": "Command 2",
     "3": "Command 3",
     "4": "Command 4",
+    "5": "Command 5"
 }
 
 
@@ -94,21 +168,27 @@ if __name__ == '__main__':
     # addRecord('川B8A569','龙秀英','7998134187080011X','1')
     # showInfo()
     # deleteRecord(carPlateNum = '川B8A569')
-    print(menu)
     while running:
+        print(menu)
         cmd = input()
         if cmd != 'q':
             if commands(cmd) is not None:
                 if cmd == '1':
-                    print('Command 1')
+                    # print('Command 1')
+                    searchInfo()
                 elif cmd == '2':
-                    print('Command 2')
+                    # print('Command 2')
+                    showInfo()
                 elif cmd == '3':
-                    print('Command 3')
-                elif cmd is '4':
-                    print('Command 4')
+                    # print('Command 3')
+                    deleteItem = input('请输入要删除的对象')
+                    deleteRecord(deleteItem)
+                elif cmd == '4':
+                    addRecord()
+                elif cmd == '5':
+                    updateRecord()
             else:
                 print('Unknown Command')
         else:
-            print('Exiting......')
+            print('正在退出')
             sys.exit()
