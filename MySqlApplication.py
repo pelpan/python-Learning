@@ -1,34 +1,33 @@
 # -- coding: utf-8 --
-from audioop import add
+import sys
 import pymysql
-import os, sys
 
 db = pymysql.connect(
     host='localhost',
     user='root',
     passwd='Pqq12138',
-    database='carInfo',
-    # cursorclass = pymysql.cursors.DictCursor # 设置返回值为字典类型
+    database='carInfo'
 )
 
 # 光标
 cursor = db.cursor()
+# 输出格式化
 fmt = "{:10}{:15}"
 
 def search(column, data):
     sql = "select * from info  where %s = '%s'" % (column, data)
     cursor.execute(sql)
     tmp = cursor.fetchall()
-    for x in tmp:    
-        if tmp:
+    if tmp:
+        for x in tmp:
             print('--------------------------------')
             print(fmt.format('车牌号：', x[0]))
             print(fmt.format('车主：', x[1]))
             print(fmt.format('身份证号：', x[2]))
             print(fmt.format('未处理的违章记录：', x[3]))
             print('--------------------------------')
-        else:
-            print("未查询到记录")
+    else:
+        print("未查询到记录")
 
 
 def searchInfo():
@@ -47,15 +46,15 @@ def searchInfo():
                     data = input('请输入车主身份证号码')
                     search('driverID', data)
             else:
-                print('Unknown Command')
+                print('命令错误！')
         else:
             return
 
 def addRecord():
-    carPlateNum  =input('请输入车牌号')
-    driverName = input('请输入车主名')
-    driverId = input('请输入车主身份证号')
-    records = input('请输入未处理违章数量')
+    carPlateNum  =input('请输入车牌号: ')
+    driverName = input('请输入车主名: ')
+    driverId = input('请输入车主身份证号: ')
+    records = input('请输入未处理违章数量: ')
     sql = "insert into info(carPlateNum, driverName,driverID, records)"
     sql2 = sql + "values ('%s' , '%s', '%s', '%s')" % (carPlateNum, driverName, driverId, records)
     cursor.execute(sql2)
@@ -69,10 +68,10 @@ def showInfo():
     print('-----------------------------')
     if tmp:
         for x in tmp:
-            print(fmt.format('| 车牌号:', x[0]))
-            print(fmt.format('| 车主:', x[1]))
-            print(fmt.format('| 身份证号:', x[2]))
-            print(fmt.format('| 未处理违章:', x[3]))
+            print(fmt.format(' 车牌号:', x[0]))
+            print(fmt.format(' 车主:', x[1]))
+            print(fmt.format(' 身份证号:', x[2]))
+            print(' 未处理违章:   ', x[3])
             print('-----------------------------')
 
     else:
@@ -89,6 +88,7 @@ def deleteRecord(carPlateNum):
 
 
 menu2 = '''
+        【请选择修改对象】
         1. 车牌号    
         2. 车主      
         3. 身份证号   
@@ -164,10 +164,6 @@ def commands(args):
 
 
 if __name__ == '__main__':
-    # database('浙A67E8F')
-    # addRecord('川B8A569','龙秀英','7998134187080011X','1')
-    # showInfo()
-    # deleteRecord(carPlateNum = '川B8A569')
     while running:
         print(menu)
         cmd = input()
@@ -190,5 +186,5 @@ if __name__ == '__main__':
             else:
                 print('Unknown Command')
         else:
-            print('正在退出')
+            print('正在退出...')
             sys.exit()
